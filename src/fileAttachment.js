@@ -17,8 +17,7 @@ function change(e) {
   var name = file.name;
   var size = file.size;
   var type = file.type;
-  //Your validation
-  var innerHtml = "<p> File Name : " + name + "</p><p>File Size : " + size + "</p>File Type : " + type + "</p>";
+  var innerHtml = "<p> File Name : " + name + "</p><p>File Size : " + size + "K</p>File Type : " + type + "</p>";
   $("#info").html(innerHtml);
 }
 
@@ -49,8 +48,18 @@ function upload(){
     }
   };
 
-  request.upload.addEventListener('progress', function(e){
-  _progress.style.width = Math.ceil((e.loaded/e.total) * 100) + "%";
+  request.upload.addEventListener('progress', function(e) {
+
+    console.log(e.loaded);
+    var megabytes = Math.ceil((e.loaded / 1024) / 1024);
+    var progerssPercentage = Math.ceil((e.loaded / e.total) * 100) + "%";
+    _progress.style.width = progerssPercentage;
+    $("#progress").text(progerssPercentage + "(" + megabytes + " MB)");
+
+    if(e.loaded === e.total) {
+      $("#progress").text("Completed");
+    }
+
   }, false);
 
   request.open('POST', 'http://lorempixel.com/g/100/100/');
