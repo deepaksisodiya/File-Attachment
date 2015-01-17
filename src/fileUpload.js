@@ -23,24 +23,23 @@ FileUpload.prototype = {
     });
   },
 
-  getAndSetFileInfoDragDrop : function (e) {
+  getAndSetFileInfo : function (e) {
     var file = e.files[0];
     var name = file.name;
     var size = file.size;
     var type = file.type;
     var innerHtml = "<p> File Name : " + name + "</p><p>File Size : " + size + "K</p>File Type : " + type + "</p>";
     this.$info.innerHTML = innerHtml;
+    this.setRange(size);
     this.uploadFile(e);
   },
 
-  getAndSetFileInfoUpload : function (e) {
-    var file = e.files[0];
-    var name = file.name;
-    var size = file.size;
-    var type = file.type;
-    var innerHtml = "<p> File Name : " + name + "</p><p>File Size : " + size + "K</p>File Type : " + type + "</p>";
-    this.$info.innerHTML = innerHtml;
-    this.uploadFile(this.$myFile);
+  setRange : function (size) {
+    if(size/1024 <= 1024) {
+      this.range = "KB";
+    }else{
+      this.range = "MB";
+    }
   },
 
   resetProgressBar: function () {
@@ -70,10 +69,16 @@ FileUpload.prototype = {
     };
     var self = this;
     request.upload.addEventListener('progress', function (e) {
-      var megabytes = Math.ceil((e.loaded / 1024) / 1024);
+      var progressSize = "";
+      if(self.range === "MB") {
+        progressSize = Math.ceil((e.loaded / 1024) / 1024) + " MB";
+      }
+      if(self.range === "KB") {
+        progressSize = Math.ceil(e.loaded/1024) + " KB";
+      }
       var progressPercentage = Math.ceil((e.loaded / e.total) * 100) + "%";
       self.$progress.style.width = progressPercentage;
-      self.$progress.innerHTML = progressPercentage + "(" + megabytes + " MB)";
+      self.$progress.innerHTML = progressPercentage + "(" + progressSize + ")";
       if (e.loaded === e.total) {
         self.$progress.innerHTML = "Completed";
       }
@@ -84,7 +89,7 @@ FileUpload.prototype = {
 
   drop: function (e) {
     e.preventDefault();
-    this.getAndSetFileInfoDragDrop(event.dataTransfer);
+    this.getAndSetFileInfo(event.dataTransfer);
   },
 
   allowDrop: function (e) {
@@ -99,6 +104,6 @@ var fileUploadObj = new FileUpload("myFile", "info", "progress", "fileDrag");
 
 $(document).ready(function () {
   fileUploadObj.$myFile.addEventListener("change", function () {
-    fileUploadObj.getAndSetFileInfoUpload(this);
+    fileUploadObj.getAndSetFileInfo(this);
   });
 });
