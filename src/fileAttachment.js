@@ -20,10 +20,10 @@ function change(e) {
 }
 
 function upload(){
-  var _submit = document.getElementById('submit'),
-  _file = document.getElementById('myFile'),
-  _progress = document.getElementById('progress');
-  console.log(_file);
+  var _progress = document.getElementById('progress');
+  _progress.style.width = 0;
+  var _submit = document.getElementById('submit');
+  var _file = document.getElementById('myFile');
   if(_file.files.length === 0){
     return;
   }
@@ -87,8 +87,9 @@ function allowDrop(e) {
 }
 
 function uploadDragAndDrop(_file){
-  var _submit = document.getElementById('submit');
   var _progress = document.getElementById('progress');
+  _progress.style.width = 0;
+  var _submit = document.getElementById('submit');
   console.log(_file);
   if(_file.files.length === 0){
     return;
