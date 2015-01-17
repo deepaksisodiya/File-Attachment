@@ -3,42 +3,53 @@
  */
 
 
-var FileUpload = function (myFile, info, progress) {
+var FileUpload = function (myFile, info, progress, fileDrag) {
   this.$myFile = document.getElementById(myFile);
   this.$info = document.getElementById(info);
   this.$progress = document.getElementById(progress);
+  this.$fileDrag = document.getElementById(fileDrag);
+  this.init();
 };
 
 FileUpload.prototype = {
 
-  setFileInfo : function(e) {
+  init : function () {
+    var self = this;
+    this.$fileDrag.addEventListener("drop", function (e) {
+      self.drop(e);
+    });
+    this.$fileDrag.addEventListener("dragover", function (e) {
+      self.allowDrop(e);
+    });
+  },
+
+  setFileInfo: function (e) {
     var file = e.files[0];
     var name = file.name;
     var size = file.size;
     var type = file.type;
     var innerHtml = "<p> File Name : " + name + "</p><p>File Size : " + size + "K</p>File Type : " + type + "</p>";
     this.$info.innerHTML = innerHtml;
-    this.resetProgressBar();
+    this.uploadFile(this.$myFile);
   },
 
-  resetProgressBar : function () {
+  resetProgressBar: function () {
     this.$progress.style.width = 0;
-    this.uploadFile();
   },
 
-  uploadFile : function() {
-    var _file = this.$myFile;
-    if(_file.files.length === 0){
+  uploadFile: function (_file) {
+    this.resetProgressBar();
+    if (_file.files.length === 0) {
       return;
     }
     var data = new FormData();
     data.append('SelectedFile', _file.files[0]);
     var request = new XMLHttpRequest();
-    request.onreadystatechange = function(){
-      if(request.readyState == 4){
+    request.onreadystatechange = function () {
+      if (request.readyState == 4) {
         try {
           var resp = JSON.parse(request.response);
-        } catch (e){
+        } catch (e) {
           var resp = {
             status: 'error',
             data: 'Unknown error occurred: [' + request.responseText + ']'
@@ -48,28 +59,41 @@ FileUpload.prototype = {
       }
     };
     var self = this;
-    request.upload.addEventListener('progress', function(e) {
+    request.upload.addEventListener('progress', function (e) {
       var megabytes = Math.ceil((e.loaded / 1024) / 1024);
       var progressPercentage = Math.ceil((e.loaded / e.total) * 100) + "%";
       self.$progress.style.width = progressPercentage;
       self.$progress.innerHTML = progressPercentage + "(" + megabytes + " MB)";
-      if(e.loaded === e.total) {
+      if (e.loaded === e.total) {
         self.$progress.innerHTML = "Completed";
       }
     }, false);
     request.open('POST', 'http://lorempixel.com/g/100/100/');
     request.send(data);
+  },
+
+  drop: function (e) {
+    e.preventDefault();
+    var fileName = event.dataTransfer.files[0].name;
+    var fileSize = event.dataTransfer.files[0].size;
+    var fileType = event.dataTransfer.files[0].type;
+    var innerHtml = "<p> File Name : " + fileName + "</p><p>File Size : " + fileSize + "K</p>File Type : " + fileType + "</p>";
+    this.$info.innerHTML = innerHtml;
+    this.uploadFile(event.dataTransfer);
+  },
+
+  allowDrop: function (e) {
+    e.preventDefault();
   }
+
 };
 
+FileUpload.prototype.constructor = FileUpload;
 
-var fileUploadObj = new FileUpload("myFile", "info", "progress");
-
+var fileUploadObj = new FileUpload("myFile", "info", "progress", "fileDrag");
 
 $(document).ready(function () {
-
   $("#myFile").change(function () {
     fileUploadObj.setFileInfo(this);
   });
-
 });
