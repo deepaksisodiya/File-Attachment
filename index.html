@@ -5,6 +5,7 @@
     <title></title>
     <script src="bower_components/jquery/dist/jquery.js"></script>
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
     <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 
 </head>
@@ -12,9 +13,10 @@
 
 <h2>File Upload</h2>
 
-<input type="file" id="myFile">
+<div id="fileDrag" ondrop="drop(event)" ondragover="allowDrop(event)">Or Drop Files Here
+    <input type="file" id="myFile" value="">
+</div>
 <div id="info"></div>
-<button id="submit">Submit</button>
 
 <div class="progress">
     <div class="progress-bar" id="progress"></div>
