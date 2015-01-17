@@ -7,18 +7,22 @@
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="style.css">
     <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="bower_components/bootstrap-filestyle/src/bootstrap-filestyle.js"></script>
 </head>
 <body>
 
-<h2>File Upload</h2>
-
-<div id="fileDrag">Or Drop Files Here
-    <input type="file" id="myFile">
-</div>
-<div id="info"></div>
-
-<div class="progress">
-    <div class="progress-bar" id="progress"></div>
+<div class="container">
+    <div class="jumbotron" id="fileDrag">
+        <h2 align="center">Drop File Here</h2>
+        <h2 align="center">Or</h2>
+        <div align="center">
+            <input type="file" id="myFile" class="filestyle" data-buttonName="btn-primary" data-buttonBefore="true">
+        </div>
+    </div>
+    <div class="progress">
+        <div class="progress-bar" id="progress"></div>
+    </div>
+    <div id="info"></div>
 </div>
 
 <script src="src/fileUpload.js"></script>

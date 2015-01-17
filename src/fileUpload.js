@@ -23,7 +23,17 @@ FileUpload.prototype = {
     });
   },
 
-  getAndSetFileInfo : function (e) {
+  getAndSetFileInfoDragDrop : function (e) {
+    var file = e.files[0];
+    var name = file.name;
+    var size = file.size;
+    var type = file.type;
+    var innerHtml = "<p> File Name : " + name + "</p><p>File Size : " + size + "K</p>File Type : " + type + "</p>";
+    this.$info.innerHTML = innerHtml;
+    this.uploadFile(e);
+  },
+
+  getAndSetFileInfoUpload : function (e) {
     var file = e.files[0];
     var name = file.name;
     var size = file.size;
@@ -74,7 +84,7 @@ FileUpload.prototype = {
 
   drop: function (e) {
     e.preventDefault();
-    this.getAndSetFileInfo(event.dataTransfer);
+    this.getAndSetFileInfoDragDrop(event.dataTransfer);
   },
 
   allowDrop: function (e) {
@@ -89,6 +99,6 @@ var fileUploadObj = new FileUpload("myFile", "info", "progress", "fileDrag");
 
 $(document).ready(function () {
   fileUploadObj.$myFile.addEventListener("change", function () {
-    fileUploadObj.getAndSetFileInfo(this);
+    fileUploadObj.getAndSetFileInfoUpload(this);
   });
 });
