@@ -23,7 +23,7 @@ FileUpload.prototype = {
     });
   },
 
-  setFileInfo: function (e) {
+  getAndSetFileInfo : function (e) {
     var file = e.files[0];
     var name = file.name;
     var size = file.size;
@@ -37,13 +37,13 @@ FileUpload.prototype = {
     this.$progress.style.width = 0;
   },
 
-  uploadFile: function (_file) {
+  uploadFile: function (file) {
     this.resetProgressBar();
-    if (_file.files.length === 0) {
+    if (file.files.length === 0) {
       return;
     }
     var data = new FormData();
-    data.append('SelectedFile', _file.files[0]);
+    data.append('SelectedFile', file.files[0]);
     var request = new XMLHttpRequest();
     request.onreadystatechange = function () {
       if (request.readyState == 4) {
@@ -74,12 +74,7 @@ FileUpload.prototype = {
 
   drop: function (e) {
     e.preventDefault();
-    var fileName = event.dataTransfer.files[0].name;
-    var fileSize = event.dataTransfer.files[0].size;
-    var fileType = event.dataTransfer.files[0].type;
-    var innerHtml = "<p> File Name : " + fileName + "</p><p>File Size : " + fileSize + "K</p>File Type : " + fileType + "</p>";
-    this.$info.innerHTML = innerHtml;
-    this.uploadFile(event.dataTransfer);
+    this.getAndSetFileInfo(event.dataTransfer);
   },
 
   allowDrop: function (e) {
@@ -93,7 +88,7 @@ FileUpload.prototype.constructor = FileUpload;
 var fileUploadObj = new FileUpload("myFile", "info", "progress", "fileDrag");
 
 $(document).ready(function () {
-  $("#myFile").change(function () {
-    fileUploadObj.setFileInfo(this);
+  fileUploadObj.$myFile.addEventListener("change", function () {
+    fileUploadObj.getAndSetFileInfo(this);
   });
 });
